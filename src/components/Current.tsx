@@ -58,7 +58,7 @@ const Current = () => {
         else return (
             <div>
                 <p className='text-2xl'>{data?.bpi.THB.rate_float.toLocaleString()} THB</p>
-                <p>Last updated { }</p>
+                <p>Last updated {data?.time.updated}</p>
             </div>
         )
     }
