@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Switch, Link, Route, useLocation, useHistory, Redirect } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Link, Route, useHistory, } from 'react-router-dom'
 import { useState } from 'react'
 import axios from 'axios'
 import Result from './Result'
@@ -13,13 +13,20 @@ type HistoryData = {
     }
 }
 
+type ModdedData = {
+    k: string;
+    d: string;
+}
+
 const History = () => {
 
-    let loading = true
-    let errLoading = false
+    const [loading, setLoading] = useState<boolean>(true)
+    const [errLoading, setErrLoading] = useState<boolean>(false)
     const [histData, setHistData] = useState<HistoryData | null>(null)
     const [starto, setStarto] = useState<string>('')
     const [endo, setEndo] = useState<string>('')
+
+    const [moddedData,addModdedData] = useState<ModdedData[]>([])
 
     // const useQuery = () => {
     //     return new URLSearchParams(useLocation().search)
@@ -29,13 +36,18 @@ const History = () => {
 
     const fetchApi = async (fetchLink: string) => {
         try {
-            const resp = await axios.get<HistoryData | null>(fetchLink)
+            const resp = await axios.get(fetchLink)
             setHistData(resp.data)
-            loading = false
+            let temp = []
+            for (const [key, data] of Object.entries(resp.data?.bpi)) {
+                temp.push({k:String(key),d:String(data)})
+            }
+            addModdedData(temp)
+            setLoading(false)
         } catch (err) {
             console.log(err)
-            loading = false
-            errLoading = true
+            setLoading(false)
+            setErrLoading(true)
         }
 
     }
@@ -58,8 +70,11 @@ const History = () => {
         }
     }
 
-    const render = () => {
+    console.log(histData?.bpi)
+
         
+    const render = () => {
+        console.log(moddedData)
         if (loading) {
             // console.log(data?.bpi)
             return (
@@ -74,7 +89,7 @@ const History = () => {
                 <div>
                     <p className='text-2xl font-semibold'>Historical price</p>
                     <p className='text-xl font-semibold'> From {starto} To {endo}</p>
-                    {histData}
+                    {moddedData.map(x => <li className='text-xl'> {x.k} - {(x.d).toLocaleString()} THB</li>)}
                 </div>
             )
         } else {
@@ -86,6 +101,7 @@ const History = () => {
             )
         }
     }
+
 
     return (
         <div className='text-center space-y-3 space-x-3'>
