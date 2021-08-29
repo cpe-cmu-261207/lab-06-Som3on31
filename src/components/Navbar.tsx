@@ -6,7 +6,7 @@ const Navbar = () => {
 			<p className='text-center text-3xl italic my-5'>Minimal Bitcoin App</p>
 			<div className='flex justify-center text-md space-x-5'>
 
-				<Link to='/current'><p>Current price</p></Link>
+				<Link to='/'><p>Current price</p></Link>
 				<p>|</p>
 				<Link to='/history/select'><p>Historical price</p></Link>
 				<p>|</p>

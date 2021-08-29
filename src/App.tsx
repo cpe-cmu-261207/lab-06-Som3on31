@@ -19,9 +19,6 @@ function App() {
 
             <Current />
           </Route>
-          <Route path='/current'>
-            <Current />
-          </Route>
           <Route path='/history/select'>
             {/* template for /history/select */}
             <History />
