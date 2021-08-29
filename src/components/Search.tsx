@@ -1,21 +1,18 @@
-import { BrowserRouter as Router, Switch, Link, Route, useLocation, useHistory } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Link, Route, useLocation, useHistory, Redirect } from 'react-router-dom'
 import { useState } from 'react'
 import axios from 'axios'
 import { object } from 'prop-types'
 import Result from './Result'
 
 
-type HistoryData = {
-    bpi: Object;
-    // disclaimer: string;
-    // time: {
-    //     updated: string;
-    //     updatedISO: string;
-    // }
-}
-
-
-
+// type HistoryData = {
+//     bpi: Object;
+//     disclaimer: string;
+//     time: {
+//         updated: string;
+//         updatedISO: string;
+//     }
+// }
 
 const History = () => {
 
@@ -44,14 +41,18 @@ const History = () => {
         }
     }
 
+    let history = useHistory()
+
     //not working atm. Goal: make this one return to the same page if dates are incorrectly filled
     const allFilledOrNot = () => {
-        let switchPlace = Date.parse(starto) < Date.parse(endo) //I had to make this or I cannot read it just like the later line below
+        let switchPlace = Date.parse(starto) > Date.parse(endo) //I had to make this or I cannot read it just like the later line below
         let isEmpty: boolean = starto === '' || endo === ''
-
+        // let history = useHistory()
 
         if (switchPlace || isEmpty) {
             alert('Please select start date and end date correctly.')
+            history.push('/history/result')
+            history.goBack()
         }
     }
 
@@ -62,15 +63,21 @@ const History = () => {
                     <Route path='/history/select'>
                         <p className='text-2xl font-semibold'>Select historical range</p>
                         <span>From date</span>
-                        <input type='date' onChange={e => setStarto(e.target.value)} id='before'></input>
+                        <input type='date' onChange={e => {
+                            setStarto(e.target.value)
+                            console.log(e.target.value)
+                        }}></input>
                         <span>To date</span>
-                        <input type='date' onChange={e => setEndo(e.target.value)} id='after'></input>
-                        <br/>
-                        <br/>
-                        <Link to='/history/select'><button onClick={allFilledOrNot}>Get data</button></Link>
+                        <input type='date' onChange={e => {
+                            setEndo(e.target.value)
+                            console.log(e.target.value)
+                        }}></input>
+                        <br />
+                        <br />
+                        <Link to='/history/result'><button onClick={allFilledOrNot}>Get data</button></Link>
                     </Route>
                     <Route path='/history/result'>
-                        {/* <Result data={histData} start={starto} end={endo} loading={loading} err={err} /> still in need for fixes */}
+                        <Result data={histData} start={starto} end={endo} loading={loading} err={err} /> still in need for fixes
                     </Route>
                 </Switch>
             </Router>

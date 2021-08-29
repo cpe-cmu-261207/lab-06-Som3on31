@@ -2,16 +2,16 @@ import { BrowserRouter as Router, Switch, Link, Route, useLocation, useHistory }
 import { useState } from 'react'
 import axios from 'axios'
 
-type HistoryData = {
-    bpi: Object;
-    // disclaimer: string;
-    // time: {
-    //     updated: string;
-    //     updatedISO: string;
-    // }
-}
+// type HistoryData = {
+//     bpi: Object;
+//     disclaimer: string;
+//     time: {
+//         updated: string;
+//         updatedISO: string;
+//     }
+// }
 
-const History = (data: Object | null, start: string, end: string, loading: boolean, err: boolean) => {
+const History = (data: Object, start: string, end: string, loading: boolean, err: boolean) => {
 
     const useQuery = () => {
         return new URLSearchParams(useLocation().search)
