@@ -2,7 +2,7 @@ import React from 'react';
 import Navbar from './components/Navbar';
 import About from './components/About'
 import Current from './components/Current'
-import History from './components/History'
+import History from './components/Search'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
 

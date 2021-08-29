@@ -21,7 +21,7 @@ const History = () => {
 
     const [loading, setLoading] = useState<boolean>(true)
     const [err, setErr] = useState<boolean>(false)
-    const [histData, setHistData] = useState<HistoryData | null>(null)
+    const [histData, setHistData] = useState<Object | null>(null)
     const [starto, setStarto] = useState<string>('')
     const [endo, setEndo] = useState<string>('')
 
@@ -33,7 +33,7 @@ const History = () => {
 
     const fetchApi = async () => {
         try {
-            const resp = await axios.get<HistoryData | null>(`https://api.coindesk.com/v1/bpi/historical/close.json?currency=THB&start=${query.get('start')}&end=${query.get('end')}`)
+            const resp = await axios.get<Object | null>(`https://api.coindesk.com/v1/bpi/historical/close.json?currency=THB&start=${query.get('start')}&end=${query.get('end')}`)
             console.log(resp.data)
             setHistData(resp.data)
             setLoading(false)
@@ -44,10 +44,16 @@ const History = () => {
         }
     }
 
-   
+    //not working atm. Goal: make this one return to the same page if dates are incorrectly filled
+    const allFilledOrNot = () => {
+        let switchPlace = Date.parse(starto) < Date.parse(endo) //I had to make this or I cannot read it just like the later line below
+        let isEmpty: boolean = starto === '' || endo === ''
 
 
-
+        if (switchPlace || isEmpty) {
+            alert('Please select start date and end date correctly.')
+        }
+    }
 
     return (
         <div className='text-center space-y-3 space-x-3'>
@@ -59,11 +65,12 @@ const History = () => {
                         <input type='date' onChange={e => setStarto(e.target.value)} id='before'></input>
                         <span>To date</span>
                         <input type='date' onChange={e => setEndo(e.target.value)} id='after'></input>
-                        <br />
-                        <Link to='/history/result'><button>Get data</button></Link>
+                        <br/>
+                        <br/>
+                        <Link to='/history/select'><button onClick={allFilledOrNot}>Get data</button></Link>
                     </Route>
                     <Route path='/history/result'>
-                        <Result/>
+                        {/* <Result data={histData} start={starto} end={endo} loading={loading} err={err} /> still in need for fixes */}
                     </Route>
                 </Switch>
             </Router>
@@ -88,23 +95,12 @@ export default History
 //prototype codes here
 
 
-// const fillData = () => {
-//     let switchPlace = Date.parse(starto) < Date.parse(endo) //I had to make this or I cannot read it just like the later line below
-//     let isEmpty: boolean = starto === '' || endo === ''
-//     // let history = useHistory()
+// else {
+    //     let extractedData = []
+    //     console.log(histData?.bpi)
 
-//     if (switchPlace || isEmpty) {
-//         alert('Please select start date and end date correctly.')
-//         // history.push('/history/select')
-//     }
-//     else {
-//         let extractedData = []
-//         console.log(histData?.bpi)
-//         // for (const [key, value] of Object.entries(histData?.bpi)) {
+    //     return (
+    //         <li className='text-xl'>kek - {(0).toLocaleString()} THB</li>   //wip
+    //     )
+    // }
 
-//         // }
-//         return (
-//             <li className='text-xl'>kek - {(0).toLocaleString()} THB</li>   //wip
-//         )
-//     }
-// }

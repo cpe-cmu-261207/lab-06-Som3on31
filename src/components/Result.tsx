@@ -11,13 +11,7 @@ type HistoryData = {
     // }
 }
 
-const History = () => {
-
-    const [loading, setLoading] = useState<boolean>(true)
-    const [err, setErr] = useState<boolean>(false)
-    const [histData, setHistData] = useState<HistoryData | null>(null)
-    const [starto, setStarto] = useState<string>('')
-    const [endo, setEndo] = useState<string>('')
+const History = (data: Object | null, start: string, end: string, loading: boolean, err: boolean) => {
 
     const useQuery = () => {
         return new URLSearchParams(useLocation().search)
@@ -25,23 +19,12 @@ const History = () => {
 
     const query = useQuery()
 
-    const fetchApi = async () => {
-        try {
-            const resp = await axios.get<HistoryData | null>(`https://api.coindesk.com/v1/bpi/historical/close.json?currency=THB&start=${query.get('start')}&end=${query.get('end')}`)
-            console.log(resp.data)
-            setHistData(resp.data)
-            setLoading(false)
-        } catch (err) {
-            console.log(err)
-            setErr(true)
-            setLoading(false)
-        }
-    }
 
+    //not working
     const render = () => {
 
         if (loading) {
-            console.log(histData?.bpi)
+            // console.log(data?.bpi)
             return (
                 <div className='text-center space-y-3'>
                     <p className='text-2xl font-semibold'>Historical price</p>
@@ -49,12 +32,12 @@ const History = () => {
                 </div>
             )
         } else if (!err) {
-            console.log(histData?.bpi)
+            // console.log(data?.bpi)
             return (
                 <div>
                     <p className='text-2xl font-semibold'>Historical price</p>
-                    {fillData()}
-                    <p className='text-xl font-semibold'> From {starto} To {endo}</p>
+                    {data}
+                    <p className='text-xl font-semibold'> From {start} To {end}</p>
                 </div>
             )
         } else {
@@ -67,28 +50,6 @@ const History = () => {
         }
     }
 
-    const fillData = () => {
-        let switchPlace = Date.parse(starto) < Date.parse(endo) //I had to make this or I cannot read it just like the later line below
-        let isEmpty: boolean = starto === '' || endo === ''
-        // let history = useHistory()
-
-        if (switchPlace || isEmpty) {
-            alert('Please select start date and end date correctly.')
-            // history.push('/history/select')
-        }
-        else {
-            let extractedData = []
-            console.log(histData?.bpi)
-            // for (const [key, value] of Object.entries(histData?.bpi)) {
-
-            // }
-            return (
-                <li className='text-xl'>kek - {(0).toLocaleString()} THB</li>   //wip
-            )
-        }
-    }
-
-
     return (
         <div>
             {render()}
@@ -98,3 +59,26 @@ const History = () => {
 
 
 export default History
+
+//not in-use code here
+
+    // const fillData = () => {
+    //     let switchPlace = Date.parse(starto) < Date.parse(endo) //I had to make this or I cannot read it just like the later line below
+    //     let isEmpty: boolean = starto === '' || endo === ''
+    //     // let history = useHistory()
+
+    //     if (switchPlace || isEmpty) {
+    //         alert('Please select start date and end date correctly.')
+    //         // history.push('/history/select')
+    //     }
+    //     else {
+    //         let extractedData = []
+    //         // console.log(histData?.bpi)
+    //         // for (const [key, value] of Object.entries(histData?.bpi)) {
+
+    //         // }
+    //         return (
+    //             <li className='text-xl'>kek - {(0).toLocaleString()} THB</li>   //wip
+    //         )
+    //     }
+    // }
