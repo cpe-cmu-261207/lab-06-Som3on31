@@ -1,24 +1,11 @@
 import { BrowserRouter as Router, Switch, Link, Route, useLocation, useHistory } from 'react-router-dom'
-import { useState } from 'react'
-import axios from 'axios'
 
-// type HistoryData = {
-//     bpi: Object;
-//     disclaimer: string;
-//     time: {
-//         updated: string;
-//         updatedISO: string;
-//     }
-// }
+interface HD{
+    data?: Object; start?: string; end?: string; loading?: boolean; err?: boolean
+}
+
 
 const History = (data: Object, start: string, end: string, loading: boolean, err: boolean) => {
-
-    const useQuery = () => {
-        return new URLSearchParams(useLocation().search)
-    }
-
-    const query = useQuery()
-
 
     //not working
     const render = () => {
@@ -36,8 +23,8 @@ const History = (data: Object, start: string, end: string, loading: boolean, err
             return (
                 <div>
                     <p className='text-2xl font-semibold'>Historical price</p>
-                    {data}
                     <p className='text-xl font-semibold'> From {start} To {end}</p>
+                    {data}
                 </div>
             )
         } else {

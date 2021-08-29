@@ -1,44 +1,43 @@
 import { BrowserRouter as Router, Switch, Link, Route, useLocation, useHistory, Redirect } from 'react-router-dom'
 import { useState } from 'react'
 import axios from 'axios'
-import { object } from 'prop-types'
 import Result from './Result'
 
 
-// type HistoryData = {
-//     bpi: Object;
-//     disclaimer: string;
-//     time: {
-//         updated: string;
-//         updatedISO: string;
-//     }
-// }
+type HistoryData = {
+    bpi: Object;
+    disclaimer: string;
+    time: {
+        updated: string;
+        updatedISO: string;
+    }
+}
 
 const History = () => {
 
-    const [loading, setLoading] = useState<boolean>(true)
-    const [err, setErr] = useState<boolean>(false)
-    const [histData, setHistData] = useState<Object | null>(null)
+    let loading = true
+    let errLoading = false
+    const [histData, setHistData] = useState<HistoryData | null>(null)
     const [starto, setStarto] = useState<string>('')
     const [endo, setEndo] = useState<string>('')
 
-    const useQuery = () => {
-        return new URLSearchParams(useLocation().search)
-    }
+    // const useQuery = () => {
+    //     return new URLSearchParams(useLocation().search)
+    // }
 
-    const query = useQuery()
+    // const query = useQuery()
 
-    const fetchApi = async () => {
+    const fetchApi = async (fetchLink: string) => {
         try {
-            const resp = await axios.get<Object | null>(`https://api.coindesk.com/v1/bpi/historical/close.json?currency=THB&start=${query.get('start')}&end=${query.get('end')}`)
-            console.log(resp.data)
+            const resp = await axios.get<HistoryData | null>(fetchLink)
             setHistData(resp.data)
-            setLoading(false)
+            loading = false
         } catch (err) {
             console.log(err)
-            setErr(true)
-            setLoading(false)
+            loading = false
+            errLoading = true
         }
+
     }
 
     let history = useHistory()
@@ -53,6 +52,38 @@ const History = () => {
             alert('Please select start date and end date correctly.')
             history.push('/history/result')
             history.goBack()
+        } else {
+            const fetchHere = 'https://api.coindesk.com/v1/bpi/historical/close.json?currency=THB&start=' + starto + '&end=' + endo
+            fetchApi(fetchHere)
+        }
+    }
+
+    const render = () => {
+        
+        if (loading) {
+            // console.log(data?.bpi)
+            return (
+                <div className='text-center space-y-3'>
+                    <p className='text-2xl font-semibold'>Historical price</p>
+                    <p className='text-2xl'>Loading ...</p>
+                </div>
+            )
+        } else if (!errLoading) {
+            // console.log(data?.bpi)
+            return (
+                <div>
+                    <p className='text-2xl font-semibold'>Historical price</p>
+                    <p className='text-xl font-semibold'> From {starto} To {endo}</p>
+                    {histData}
+                </div>
+            )
+        } else {
+            return (
+                <ul>
+                    <p className='text-2xl font-semibold'>Historical price</p>
+                    <p className='text-2xl text-red-500'>There was an error. Please try again later.</p>
+                </ul>
+            )
         }
     }
 
@@ -77,7 +108,7 @@ const History = () => {
                         <Link to='/history/result'><button onClick={allFilledOrNot}>Get data</button></Link>
                     </Route>
                     <Route path='/history/result'>
-                        <Result data={histData} start={starto} end={endo} loading={loading} err={err} /> still in need for fixes
+                        {render()}
                     </Route>
                 </Switch>
             </Router>
@@ -100,6 +131,8 @@ export default History
 
 
 //prototype codes here
+
+// const resp = await axios.get<Object | null>(`https://api.coindesk.com/v1/bpi/historical/close.json?currency=THB&start=${query.get(starto)}&end=${query.get(endo)}`)
 
 
 // else {
